@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LIFJARZSTORE.ID - Official Fish It Market</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #0c111c; color: #eee; min-height: 100vh; }
+a { text-decoration: none; color: inherit; }
+
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 15px 20px; background-color: #131a2a;
+  position: sticky; top: 0; z-index: 1000;
+}
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; color: #f2c94c; }
+.logo img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+.btn-menu {
+  background-color: #f2c94c; border: none; padding: 8px 18px;
+  color: #0c111c; font-weight: 600; border-radius: 20px; cursor: pointer;
+}
+.btn-menu:hover { background-color: #d4ae28; }
+
+.menu-popup {
+  position: fixed; top: 0; right: -320px;
+  width: 320px; height: 100%;
+  background: #0b1220;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.5);
+  transition: right 0.3s ease;
+  z-index: 2000;
+  padding: 20px;
+}
+.menu-popup.open { right: 0; }
+.menu-popup h3 { color: #f2c94c; margin-bottom: 10px; }
+.menu-popup ul { list-style: none; }
+.menu-popup li { margin: 12px 0; }
+.menu-popup button {
+  width: 100%;
+  padding: 10px 12px;
+  background: #1b2a44;
+  color: #fff;
+  border: 1px solid #2a3d62;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+.menu-popup button:hover { background: #243a5d; }
+
+.overlay {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.55);
+  display: none; z-index: 1500;
+}
+.overlay.show { display: block; }
+
+.banner {
+  margin: 15px 20px;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  height: 160px;
+  background: #000;
+}
+.banner video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(0.75);
+}
+.banner .banner-text {
+  position: absolute; left: 20px; top: 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.2;
+  text-shadow: 0 0 10px rgba(255,255,255,0.7);
+}
+.banner .banner-text .glow {
+  color: #fff;
+  text-shadow:
+    0 0 6px #f2c94c,
+    0 0 12px #f2c94c,
+    0 0 18px #f2c94c,
+    0 0 24px #36f4b8;
+  animation: glow 2.2s ease-in-out infinite;
+}
+@keyframes glow {
+  0%,100% { text-shadow: 0 0 6px #f2c94c, 0 0 12px #f2c94c, 0 0 18px #f2c94c, 0 0 24px #36f4b8; }
+  50% { text-shadow: 0 0 10px #fff, 0 0 18px #fff, 0 0 26px #36f4b8, 0 0 30px #36f4b8; }
+}
+
+.info-alert {
+  background-color: #3095de;
+  margin: 0 20px 20px;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(69, 214, 151, 0.959);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 1rem; color: white;
+}
+
+.section {
+  margin: 30px 20px;
+}
+.section h2 {
+  color: #f2c94c;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+.section p { color: #ddd; line-height: 1.5; }
+
+.order-box {
+  background: #0b1220;
+  border-radius: 15px;
+  padding: 18px;
+  border: 1px solid #2a3d62;
+}
+.order-box .title { font-weight: 900; color: #fff; margin-bottom: 8px; }
+.order-box .note { color: #ccc; font-size: 0.95rem; margin-top: 8px; }
+
+.paket-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f2c94c;
+}
+.paket-title img { width: 30px; height: 30px; object-fit: contain; }
+
+.paket-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+}
+.paket-item {
+  background: linear-gradient(145deg, #0a1a3a, #112850);
+  border-radius: 15px;
+  padding: 15px 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(16, 32, 64, 0.8);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.paket-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(242, 201, 76, 0.8);
+}
+.paket-icon img {
+  width: 40px; height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 3px #f2c94c);
+}
+.paket-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; color: #ffffff; }
+.paket-price { font-weight: 600; font-size: 0.9rem; color: #f2c94c; }
+.paket-stock { font-size: 0.85rem; color: #b7c7d9; margin-top: 6px; }
+
+.testi-wrap {
+  margin: 30px 20px;
+}
+.testi-header {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 10px;
+}
+.testi-header .avg {
+  color: #fff;
+  font-weight: 700;
+}
+.testi-header .stars {
+  display: flex; gap: 2px;
+}
+.star { color: #f2c94c; }
+
+.testi-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.testi-item {
+  background: #0b1220;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #2a3d62;
+}
+.testi-item .meta { display: flex; justify-content: space-between; gap: 10px; }
+.testi-item .name { font-weight: 800; color: #f2c94c; }
+.testi-item .rating { display: flex; gap: 2px; }
+.testi-item .comment { margin-top: 6px; color: #ddd; }
+
+.footer {
+  margin: 40px 20px 30px;
+  padding-top: 20px;
+  border-top: 1px solid #2a3d62;
+  color: #bbb;
+  font-size: 0.9rem;
+}
+.footer p { margin-top: 8px; line-height: 1.4; }
+
+.order-modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+.order-modal.show { display: flex; }
+
+.order-box-modal {
+  width: 90%;
+  max-width: 420px;
+  background: #0b1220;
+  border-radius: 15px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+.order-box-modal h3 { color: #f2c94c; margin-bottom: 8px; }
+.order-box-modal label { display: block; margin-top: 10px; font-weight: 600; color: #fff; }
+.order-box-modal input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 10px;
+  border: 1px solid #2a3d62;
+  background: #0b1220;
+  color: #fff;
+}
+.order-box-modal .actions {
+  display: flex; gap: 10px; margin-top: 15px;
+}
+.order-box-modal button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn-order { background: #f2c94c; color: #0c111c; }
+.btn-cancel { background: #1b2a44; color: #fff; }
+
+@media (max-width: 480px) {
+  .banner { height: 140px; }
+  .banner .banner-text { font-size: 1.1rem; }
+  .paket-item { padding: 12px 8px; }
+  .paket-icon img { width: 35px; height: 35px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    <img src="https://via.placeholder.com/35" alt="Logo" />
+    LIFJARZSTORE.ID
+  </div>
+  <button class="btn-menu">Menu</button>
+</header>
+
+<div class="overlay"></div>
+
+<div class="menu-popup" id="menuPopup">
+  <h3>Menu</h3>
+  <ul>
+    <li><button data-scroll="home">Home</button></li>
+    <li><button data-scroll="order">Cara Order</button></li>
+    <li><button data-scroll="products">Produk</button></li>
+    <li><button data-scroll="testi">Testimoni</button></li>
+    <li><button data-scroll="about">Tentang Kami</button></li>
+  </ul>
+  <div style="margin-top:20px; font-size:0.9rem; color:#bbb;">
+    <div><b>Admin:</b> login <a href="admin.html" style="color:#f2c94c;">di sini</a></div>
+  </div>
+</div>
+
+<section class="banner" id="home">
+  <!-- TODO: Ganti video banner di sini (pakai file mp4) -->
+  <video id="bannerVideo" autoplay muted loop playsinline>
+    <source src="banner.mp4" type="video/mp4">
+  </video>
+  <div class="banner-text">
+    <span class="glow">RAMAIKAN RAMADHAN</span><br>
+    <span style="font-weight: 900;">BANYAK PROMO MENARIK!</span>
+  </div>
+</section>
+
+<div class="info-alert" id="infoAlert">🔥 -STAY AMANAH CIHUYY- 🔥</div>
+
+<div class="section" id="order">
+  <div class="order-box">
+    <div class="title">Cara Order</div>
+    <p id="caraOrderText">
+      1. Pilih produk<br>
+      2. Isi username Roblox + jumlah<br>
+      3. Klik “Order Sekarang”<br>
+      4. Kamu akan diarahkan ke WhatsApp untuk konfirmasi<br><br>
+      <b>Catatan:</b><br>
+      • Pastikan username Roblox benar.<br>
+      • Stok dapat berubah sewaktu-waktu.<br>
+      • Garansi 1x24 jam setelah pembayaran.
+    </p>
+  </div>
+</div>
+
+<main id="products">
+  <h2 class="paket-title">
+    <img src="https://via.placeholder.com/30" alt="Coin Icon" />
+    Pilihan All Gamepass Fish It - ROBLOX
+  </h2>
+
+  <div class="paket-list" id="productList"></div>
+
+  <div class="testi-wrap" id="testi">
+    <div class="testi-header">
+      <div class="avg" id="avgRating">Rating: 0/5</div>
+      <div class="stars" id="avgStars"></div>
+    </div>
+    <div class="testi-list" id="testiList"></div>
+  </div>
+
+  <div class="section" id="about">
+    <h2>Tentang Kami</h2>
+    <p id="aboutText">
+      LIFJARZSTORE.ID adalah toko resmi Fish It Market ROBLOX.<br><br>
+      🕗 Jam Operasional: 20.00 - 22.00 WIB<br>
+      🛡️ Garansi: 1x24 jam (selama syarat terpenuhi)<br><br>
+      📌 Kami melayani pembelian gamepass & item ROBLOX dengan aman dan cepat.<br><br>
+      📷 Instagram: @lifjarzstore<br>
+      © 2026 LIFJARZSTORE.ID • All Rights Reserved
+    </p>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 LIFJARZSTORE.ID • All Rights Reserved</p>
+  </div>
+</main>
+
+<!-- Order Modal -->
+<div class="order-modal" id="orderModal">
+  <div class="order-box-modal">
+    <h3 id="orderTitle">Order</h3>
+
+    <label>Username Roblox</label>
+    <input type="text" id="usernameInput" placeholder="contoh: Lifjarz123">
+
+    <label>Jumlah</label>
+    <input type="number" id="qtyInput" placeholder="1" min="1">
+
+    <div class="actions">
+      <button class="btn-order" id="orderNowBtn">Order Sekarang</button>
+      <button class="btn-cancel" id="cancelBtn">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyABd8_CJuZxURsyhGp4APYbTjnIAzVGmrA",
+  authDomain: "lifjarzstoreid-26f78.firebaseapp.com",
+  projectId: "lifjarzstoreid-26f78",
+  storageBucket: "lifjarzstoreid-26f78.appspot.com",
+  messagingSenderId: "238175505642",
+  appId: "1:238175505642:web:a886dbe6a673a24d4c9b93"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const btnMenu = document.querySelector(".btn-menu");
+const menuPopup = document.getElementById("menuPopup");
+const overlay = document.querySelector(".overlay");
+
+btnMenu.addEventListener("click", () => {
+  menuPopup.classList.add("open");
+  overlay.classList.add("show");
+});
+
+overlay.addEventListener("click", () => {
+  menuPopup.classList.remove("open");
+  overlay.classList.remove("show");
+});
+
+document.querySelectorAll("[data-scroll]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = document.getElementById(btn.dataset.scroll);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    menuPopup.classList.remove("open");
+    overlay.classList.remove("show");
+  });
+});
+
+const infoAlert = document.getElementById("infoAlert");
+const caraOrderText = document.getElementById("caraOrderText");
+const aboutText = document.getElementById("aboutText");
+const bannerVideo = document.getElementById("bannerVideo");
+
+db.collection("site").doc("content").onSnapshot(doc => {
+  if (!doc.exists) return;
+  const data = doc.data();
+
+  if (data.infoAlert) infoAlert.textContent = data.infoAlert;
+  if (data.caraOrder) caraOrderText.innerHTML = data.caraOrder.replace(/\n/g, "<br>");
+  if (data.tentangKami) aboutText.innerHTML = data.tentangKami.replace(/\n/g, "<br>");
+  if (data.bannerVideo) bannerVideo.querySelector("source").src = data.bannerVideo;
+});
+
+const productList = document.getElementById("productList");
+let selectedProduct = null;
+
+function formatRupiah(num) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(num);
+}
+
+db.collection("products").onSnapshot(snapshot => {
+  productList.innerHTML = "";
+  snapshot.forEach(doc => {
+    const p = doc.data();
+    const card = document.createElement("div");
+    card.classList.add("paket-item");
+
+    const priceText = p.price ? formatRupiah(p.price) : "Rp 0";
+    const icon = p.iconUrl || 'https://via.placeholder.com/40';
+
+    card.innerHTML = `
+      <div class="paket-icon"><img src="${icon}" alt="Icon"></div>
+      <div class="paket-name">${p.name || "Produk"}</div>
+      <div class="paket-price">${priceText}</div>
+      <div class="paket-stock">Stok: ${p.stock || 0}</div>
+    `;
+    card.addEventListener("click", () => openOrderModal(doc.id, p));
+    productList.appendChild(card);
+  });
+});
+
+const orderModal = document.getElementById("orderModal");
+const orderTitle = document.getElementById("orderTitle");
+const usernameInput = document.getElementById("usernameInput");
+const qtyInput = document.getElementById("qtyInput");
+const orderNowBtn = document.getElementById("orderNowBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+
+function openOrderModal(id, product) {
+  selectedProduct = { id, ...product };
+  orderTitle.textContent = `Order: ${product.name}`;
+  usernameInput.value = "";
+  qtyInput.value = "1";
+  orderModal.classList.add("show");
+}
+
+function isValidRobloxUsername(name) {
+  return /^[a-zA-Z0-9_]{3,20}$/.test(name);
+}
+
+orderNowBtn.addEventListener("click", () => {
+  const username = usernameInput.value.trim();
+  const qty = parseInt(qtyInput.value);
+
+  if (!selectedProduct) return alert("Pilih produk dulu.");
+  if (!isValidRobloxUsername(username)) return alert("Username Roblox tidak valid. (3-20 karakter, huruf/angka/underscore)");
+  if (!qty || qty < 1) return alert("Jumlah minimal 1.");
+
+  const waNumber = "6289685391751";
+  const text = encodeURIComponent(
+    `ORDER LIFJARZSTORE.ID\n` +
+    `Produk: ${selectedProduct.name}\n` +
+    `Harga: ${formatRupiah(selectedProduct.price || 0)}\n` +
+    `Username Roblox: ${username}\n` +
+    `Jumlah: ${qty}\n` +
+    `\nTerima kasih!`
+  );
+  window.location.href = `https://wa.me/${waNumber}?text=${text}`;
+
+  orderModal.classList.remove("show");
+});
+
+cancelBtn.addEventListener("click", () => {
+  orderModal.classList.remove("show");
+});
+
+const testiList = document.getElementById("testiList");
+const avgRating = document.getElementById("avgRating");
+const avgStars = document.getElementById("avgStars");
+
+db.collection("testimonials").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+  testiList.innerHTML = "";
+  let sum = 0;
+  let count = 0;
+
+  snapshot.forEach(doc => {
+    const t = doc.data();
+    const item = document.createElement("div");
+    item.classList.add("testi-item");
+
+    const stars = "★".repeat(t.rating || 0) + "☆".repeat(5 - (t.rating || 0));
+    item.innerHTML = `
+      <div class="meta">
+        <div class="name">${t.name || "Anon"}</div>
+        <div class="rating">${stars}</div>
+      </div>
+      <div class="comment">${t.comment || ""}</div>
+    `;
+    testiList.appendChild(item);
+
+    sum += (t.rating || 0);
+    count++;
+  });
+
+  const avg = count ? (sum / count) : 0;
+  avgRating.textContent = `Rating: ${avg.toFixed(1)}/5`;
+  avgStars.innerHTML = "★".repeat(Math.round(avg)) + "☆".repeat(5 - Math.round(avg));
+});
+</script>
+
+</body>
+</html>
